@@ -1,0 +1,149 @@
+package J_collection;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Scanner;
+
+class Main {
+	public static void main(String[] args) {	
+		Scanner scanner = new Scanner(System.in);
+		Board board = new Board();
+		board.setScanner(scanner);
+		board.start();
+		scanner.close();
+	}
+}
+
+class Board {
+	Scanner scanner;
+	Article[] articles;
+	int articlesLastIndex;
+
+	Board() {
+		articlesLastIndex = -1;
+		articles = new Article[100];
+	}
+	int getArticlesCount() {
+		return articlesLastIndex + 1;
+	}
+	void setScanner(Scanner scanner) {
+		this.scanner = scanner;
+	}
+
+	void start() {
+		showHelp();
+
+		while (true) {
+			System.out.printf("입력) ");
+			String command = scanner.next().trim();
+
+		    if (command.equals("2")) {
+				scanner.nextLine(); // 명령어 입력의 흔적을 지운다.(버퍼를 깔끔하게 비움)
+				doCommand2();
+			} else if (command.equals("1")) {
+				int idToDetail = scanner.nextInt(); // 상세하게 보여줄 게시물 번호 입력
+				scanner.nextLine(); // 명령어 입력의 흔적을 지운다.(버퍼를 깔끔하게 비움)
+				doCommand1(idToDetail);
+			} else if (command.equals("3")) {
+				scanner.nextLine(); // 명령어 입력의 흔적을 지운다.(버퍼를 깔끔하게 비움)
+				doCommand3();
+				break;
+			} else {
+				scanner.nextLine(); // 명령어 입력의 흔적을 지운다.(버퍼를 깔끔하게 비움)
+				System.out.println("일치하는 명령어가 없습니다.");
+			}
+		}
+	}
+
+	void doCommand3() {
+		System.out.println("== 게시판 종료 ==");
+	}
+
+	void showHelp() {
+
+	    System.out.println("---------------------------"+"게시판"+"----------------------");
+        System.out.println(" 번호 "+"\t\t"+" 제목"+"\t\t"+" 작성 자"+"\t\t"+" 작성일");
+        System.out.println("------------------------------------------------------");
+       
+        System.out.println("1.조회 + (게시글 번호)"+"\t\t"+"2.등록"+"\t\t"+"3.종료");	  
+	
+	
+	}
+	
+	
+	
+	void doCommand1(int id) {
+		System.out.println("== 게시물 상세 ==");
+
+		Article article = getArticleById(id);
+
+		if (article == null) {
+			System.out.println("해당 게시물은 존재하지 않습니다.");
+			return;
+		}
+
+		System.out.printf("번호 : %d\n", article.id);
+		System.out.printf("날짜 : %s\n", article.regDate);
+		System.out.printf("제목 : %s\n", article.title);
+		System.out.printf("내용 : %s\n", article.body);
+	}
+	Article getArticleById(int id) {
+		for (int i = 0; i <= articlesLastIndex; i++) {
+			if (articles[i].id == id) {
+				return articles[i];
+			}
+		}
+
+		return null;
+	}
+
+
+	void doCommand2() {
+		System.out.println("== 게시물 추가 ==");
+
+		Article newArticle = new Article();
+		int articlesNewIndex = articlesLastIndex + 1;
+		int newId;
+
+		Article lastArticle = getLastArticle();
+
+		if (lastArticle == null) {
+			newId = 1;
+		} else {
+			newId = lastArticle.id + 1;
+		}
+
+		newArticle.id = newId;
+		System.out.print("제목 : ");
+		newArticle.title = scanner.nextLine().trim();
+		System.out.print("내용 : ");
+		newArticle.body = scanner.nextLine().trim();
+		newArticle.regDate = getNowDateStr();
+		System.out.printf("%d번 글이 생성되었습니다.\n", newArticle.id);
+
+		articles[articlesNewIndex] = newArticle;
+
+		articlesLastIndex++; // 이걸 해야 게시물 정보가 차곡차곡 저장된다.
+	}
+
+	Article getLastArticle() {
+		if (getArticlesCount() > 0) {
+			return articles[articlesLastIndex];
+		}
+		return null;
+	}
+
+	String getNowDateStr() {
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat Date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateStr = Date.format(cal.getTime());
+		return dateStr;
+	}
+}
+
+class Article {
+	int id;
+	String regDate;
+	String title;
+	String body;
+}
