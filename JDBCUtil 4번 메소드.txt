@@ -1,0 +1,45 @@
+//4번 메서드, 데이터베이스에 연결 한 다음 넘어온 쿼리를 list에 넣고 물음표(param)의 값을 Map형태로 만들어준다(?)
+	List<Map<String, Object>> selectList(String sql, List<Object> param){
+		List<Map<String, Object>> list = new ArrayList<>();
+		
+		//(1)데이터베이스 접속해서 조회한다.
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			
+			//(2)쿼리 넘겨준다
+			ps = con.prepareStatement(sql);
+			//list에는 값이 여러개 ->for문 사용
+			for(int i =0; i<param.size(); i++){
+				ps.setObject(i+1, param.get(i)); //물음표에 들어갈 값 다 세팅완료	
+			}
+			//(3)실행
+			rs = ps.executeQuery();
+			//우리는 rs에 들어있는 값을 모른다. => getMetaData
+			ResultSetMetaData metaData = rs.getMetaData();
+			int columnCount = metaData.getColumnCount();
+			
+			while(rs.next()){
+				//HashMap생성
+				HashMap<String,Object> row = new HashMap<>();
+				for(int i =1; i <= columnCount; i++){
+					//값 하나씩 추출하면서 list에 담아서 리턴을 해야한다.
+					//list안에는 HashMap형태로 담겨져 있다.
+					//우리도 그래서 값을 HashMap형태로 만들어야 한다. => HashMap생성
+					
+					//key 컬럼명, data 컬럼값
+					//i번째에 있는 getColumnName을 가져오고, rs.getObject(i)를 통해 값을 가져온다.
+					row.put(metaData.getColumnName(i), rs.getObject(i)); //한줄의 값을 가져왔다.	
+				}
+				list.add(row); //가져온 값을 list에 넣는다. 
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			if(rs != null) try { rs.close(); } catch(Exception e) {}
+			if(ps != null) try { ps.close(); } catch(Exception e) {}
+			if(con != null) try { con.close(); } catch(Exception e) {}
+		}
+		
+		return list;
+	}
