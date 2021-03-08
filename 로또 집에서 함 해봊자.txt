@@ -1,0 +1,91 @@
+package practice_01;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Lotto_lucky {
+
+	int day = 0; // 일차 변수
+	List<HashMap<String, HashSet<Integer>>> ulotto = new ArrayList<HashMap<String, HashSet<Integer>>>();
+	// 회차별 List 유저별로 Map, 중복 번호 방지 SET 유저 로또 번호 저장
+	List<HashSet<Integer>> mlotto = new ArrayList<HashSet<Integer>>();
+	// List로 인덱스 등록 하여 회차별로 당첨 로또 번호 저장
+	Map<String, HashSet<Integer>> intRnd = new HashMap<String, HashSet<Integer>>();
+	
+	static HashSet<Integer> intRnd = new HashSet<Integer>(); // 유저 로또 번호 받기
+	static HashSet<Integer> intma = new HashSet<Integer>(); // 머신 로또 번호 받기
+
+	static Scanner sc = new Scanner(System.in);
+
+	public static void main(String[] args) {
+
+		System.out.println("================================"); // 로또 시작
+		System.out.println("\t Lotto 프로그램");
+		System.out.println("---------------------------");
+		System.out.println("================================");
+		System.out.println("1. Lotto 구입");
+		System.out.println("2. 지난 당첨 번호 ");
+		System.out.println("3. 프로그램 종료");
+		System.out.println("================================");
+		System.out.println("입력>");
+
+		int choice = sc.nextInt();
+
+		switch (choice) {
+		case 1:
+			buy();
+			break;
+		case 2:
+
+			break;
+		case 3:
+			System.out.println("다음에 또 이용해 주시길 바랩니다.");
+			break;
+		}
+	}
+
+	static void buy() {
+
+		System.out.println("============Lotto 구입=================");
+		System.out.println("\tLotto는 1개당 1500입니다.");
+		System.out.println("지난 회차 번호 ");
+		System.out.println("0+0+0000");
+		System.out.println("구입 하실 복권의 종류를 선택 해 주세요");
+		System.out.println("1. 수동 ");
+		System.out.println("2. 자동");
+		System.out.println("선택>");
+		int choice2 = sc.nextInt();
+		System.out.println("갯수도 입력 해 주세요");
+		int choice3 = sc.nextInt();
+
+		switch (choice2) {
+		case 1:
+			System.out.println(choice3 + "장 구매되셨습니다.");
+			for (int i = choice3; i > 0; i--) {
+
+				while (intma.size() < 6) {
+				}
+			}
+
+		case 2:
+			System.out.println(choice3 + "장 구매되셨습니다.");
+
+			System.out.println("행운의 로또번호는 아래와 같습니다.\n");
+			for (int i = choice3; i < 0; i--) {
+
+				while (intRnd.size() < 6) {
+					int num = (int) (Math.random() * 45 + 1);
+					intRnd.add(num);
+				
+				}
+				System.out.println("로또번호 : " + i + "번쨰 로또"+ intRnd);
+
+			}
+		}
+
+	}
+}
