@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+			PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+			"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+			
+<sqlMap namespace="boardTest">
+	
+<!-- 
+		이 영역에 sql문에 맞는 태그를 사용하여 SQL문을 기술한다 
+		
+		사용하수있는 기본적인 태그들
+		<select></select>
+		<insert></insert>
+		<upadte></upadte>
+		<delete></delete>
+		
+		위 태그에서 사용되는 속성들
+		
+		1) id속성 : 해당 태그를 호출할때 <sqlMap>태그의 namespace와 연결하여 사용하는 이름
+		
+		2) parameterCalss속성 : sql문에 사용될 데이터가 들어있는 객체를 지정한다
+		(보통 VO클래스,자바의 자료형이름등이 사용된다)
+		(typeAlias로 지정한 alias명을 사용할수 있다)
+		
+		3)resultClass 속성 : select문을 실행한 결과를 담을 객체를 지정한다 
+						(보통VO클래스나 자바의 자료형이름을 사용한다 )
+ -->
+	
+		<insert id="insertBoard" parameterClass="boardVO">
+		
+			insert into board
+			(board_num,mem_id,board_title,board_content,board_date,board_writer,board_reple,board_count,video_num,board_path)
+			values(board_seq.nextVal,#memId#,#boardTitle#,#boardContent#,SYSDATE,#boardWriter#,#boardReple#,#boardCount#,#videoNum#,#boardPath#)
+		
+		</insert>
+
+
+		<update id="updateBoard" parameterClass="boardVO">
+	
+			update board
+			set board_title = #boardTitle#
+				,board_content = #boardContent#
+				,board_writer = #boardWriter#
+			where board_num = #boardNum#
+	
+		</update>
+
+
+
+		<delete id="deleteBoard" parameterClass="int">
+		
+			delete from board
+			where board_num = #boardNum# 
+		
+		</delete>
+
+
+		<resultMap class="boardVO" id="boardMap">
+	
+		<result property="boardNum" column="board_num"/>
+		<result property="memId" column="mem_id"/>
+		<result property="boardTitle" column="board_title"/>
+		<result property="boardContent" column="board_content"/>
+		<result property="boardDate" column="board_date"/>
+		<result property="boardWriter" column="board_writer"/>
+		<result property="boardReple" column="board_reple"/>
+		<result property="boardCount" column="board_count"/>
+		<result property="videoNum" column="video_num"/>
+		<result property="boardPath" column="board_path"/>
+	
+		</resultMap>
+		
+		<select id="getBoardAll" resultMap="boardMap">
+	
+			select *
+			from board
+		
+		</select>
+
+
+
+
+		<select id="checkBoard" parameterClass="int" resultClass="int">
+	
+			select count(*) as cnt
+			from board 
+			where board_num = #boardNum#
+	
+		</select>
+	
+		<select id="getBoard" parameterClass="String" resultMap="boardMap">
+		
+			select *
+			from board
+			where board_num = #boardNum#
+		
+		</select>
+	
+		<select id="getSearchBoard" parameterClass="boardVO" resultMap="boardMap">
+	
+			select * from board
+			where 1=1
+			
+			<isNotEmpty property="boardTitle">
+				and board_title like '%'|| #boardTitle# ||'%'
+			</isNotEmpty>
+	
+			<isNotEmpty property="boardContent">
+				and board_content like '%'|| #boardContent# ||'%'
+			</isNotEmpty>
+	
+			<isNotEmpty property="boardWriter">
+				and board_writer like '%'|| #boardWriter# ||'%'
+			</isNotEmpty>
+	
+		</select>
+</sqlMap>
